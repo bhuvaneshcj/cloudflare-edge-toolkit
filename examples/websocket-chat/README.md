@@ -26,11 +26,13 @@ const ws = new WebSocket("ws://localhost:8787/ws");
 ws.onopen = () => {
     console.log("Connected");
     // Send a message
-    ws.send(JSON.stringify({
-        type: "message",
-        user: "John",
-        message: "Hello, world!",
-    }));
+    ws.send(
+        JSON.stringify({
+            type: "message",
+            user: "John",
+            message: "Hello, world!",
+        }),
+    );
 };
 
 ws.onmessage = (event) => {
@@ -58,4 +60,3 @@ ws.onclose = () => {
     "message": "Hello!"
 }
 ```
-

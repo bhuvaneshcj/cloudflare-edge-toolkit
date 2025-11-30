@@ -151,7 +151,9 @@ export class Session {
         // Generate a random session ID
         const bytes = new Uint8Array(32);
         crypto.getRandomValues(bytes);
-        return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+        return Array.from(bytes, (byte) =>
+            byte.toString(16).padStart(2, "0"),
+        ).join("");
     }
 
     /**
@@ -201,4 +203,3 @@ export async function getSession(
     await session.load();
     return session;
 }
-

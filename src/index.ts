@@ -32,6 +32,9 @@ export * from "./orm/index.js";
 // WebSocket exports
 export * from "./websocket/index.js";
 
+// Testing exports (for testing utilities)
+export * from "./testing/index.js";
+
 // Type exports
 export type { Env, WorkerEnv } from "./types/env.js";
 export type { RequestWithParams, ParsedRequest } from "./types/request.js";

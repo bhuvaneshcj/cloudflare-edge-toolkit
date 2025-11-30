@@ -9,7 +9,11 @@ import type { RequestWithParams } from "cloudflare-edge-toolkit";
 import type { Session } from "cloudflare-edge-toolkit";
 
 export default {
-    async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    async fetch(
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext,
+    ): Promise<Response> {
         const app = new Router();
 
         // Session middleware
@@ -177,4 +181,3 @@ interface Env {
     SESSIONS_KV: KVNamespace;
     SESSION_SECRET?: string;
 }
-

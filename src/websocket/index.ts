@@ -7,8 +7,4 @@ export {
 } from "./WebSocketHandler.js";
 
 // Room management
-export {
-    WebSocketRoom,
-    RoomManager,
-} from "./Room.js";
-
+export { WebSocketRoom, RoomManager } from "./Room.js";

@@ -5,29 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2024-11-30
+
+### Added
+
+- **Testing Utilities** - Comprehensive testing helpers for Cloudflare Workers
+
+    ```typescript
+    import {
+        createTestWorker,
+        get,
+        post,
+        assertResponse,
+        createMockKV,
+    } from "cloudflare-edge-toolkit";
+
+    const worker = createTestWorker(router);
+    const kv = worker.kv("MY_KV");
+    const response = await worker.fetch(get("/users"));
+    await assertResponse(response).status(200).json();
+    ```
+
+- **Request Builders** - Fluent API for creating test requests
+- **Mock Services** - Mock KV, R2, and D1 for testing
+- **Response Assertions** - Chainable assertions for testing responses
+- **Test Worker** - Helper for running routers in tests
+
 ## [1.4.0] - 2024-11-30
 
 ### Added
 
 - **WebSocket Support** - Upgrade HTTP requests to WebSocket
-  ```typescript
-  import { upgradeWebSocket } from "cloudflare-edge-toolkit";
-  
-  app.get("/ws", (req) => {
-    return upgradeWebSocket(req, {
-      onMessage: (ws, message) => {
-        ws.send(`Echo: ${message}`);
-      },
+
+    ```typescript
+    import { upgradeWebSocket } from "cloudflare-edge-toolkit";
+
+    app.get("/ws", (req) => {
+        return upgradeWebSocket(req, {
+            onMessage: (ws, message) => {
+                ws.send(`Echo: ${message}`);
+            },
+        });
     });
-  });
-  ```
+    ```
 
 - **Room Management** - Organize WebSocket connections into rooms
-  ```typescript
-  const roomManager = new RoomManager();
-  const room = roomManager.getRoom("chat");
-  room.broadcast("Hello everyone!");
-  ```
+
+    ```typescript
+    const roomManager = new RoomManager();
+    const room = roomManager.getRoom("chat");
+    room.broadcast("Hello everyone!");
+    ```
 
 - **Message Broadcasting** - Send messages to multiple connections
 - **Connection Management** - Handle open, close, error events
@@ -43,13 +71,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Session Management** - KV-backed session storage
-  ```typescript
-  app.use(session({
-    kv: env.SESSIONS_KV,
-    secret: env.SESSION_SECRET,
-    maxAge: 3600,
-  }));
-  ```
+
+    ```typescript
+    app.use(
+        session({
+            kv: env.SESSIONS_KV,
+            secret: env.SESSION_SECRET,
+            maxAge: 3600,
+        }),
+    );
+    ```
 
 - **Session Class** - Full session API with get, set, delete, clear
 - **Session Middleware** - Automatic session loading and saving

@@ -23,7 +23,10 @@ export class WebSocketRoom {
     /**
      * Broadcast message to all connections in room
      */
-    broadcast(message: string | ArrayBuffer | ArrayBufferView, exclude?: WebSocket): void {
+    broadcast(
+        message: string | ArrayBuffer | ArrayBufferView,
+        exclude?: WebSocket,
+    ): void {
         for (const ws of this.connections) {
             if (ws === exclude) {
                 continue;
@@ -32,7 +35,10 @@ export class WebSocketRoom {
                 try {
                     ws.send(message);
                 } catch (error) {
-                    console.error("Failed to send message to WebSocket:", error);
+                    console.error(
+                        "Failed to send message to WebSocket:",
+                        error,
+                    );
                     this.connections.delete(ws);
                 }
             } else {
@@ -141,4 +147,3 @@ export class RoomManager {
         return room ? room.size() : 0;
     }
 }
-

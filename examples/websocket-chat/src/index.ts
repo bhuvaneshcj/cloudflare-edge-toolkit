@@ -7,7 +7,11 @@ import {
 import type { WebSocketHandler } from "cloudflare-edge-toolkit";
 
 export default {
-    async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    async fetch(
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext,
+    ): Promise<Response> {
         const app = new Router();
 
         // Room manager for chat rooms
@@ -22,10 +26,12 @@ export default {
                 room.add(ws);
 
                 // Send welcome message
-                ws.send(JSON.stringify({
-                    type: "system",
-                    message: "Welcome to the chat!",
-                }));
+                ws.send(
+                    JSON.stringify({
+                        type: "system",
+                        message: "Welcome to the chat!",
+                    }),
+                );
             },
 
             onMessage: (ws, message, req) => {
@@ -35,27 +41,36 @@ export default {
 
                     if (data.type === "message") {
                         // Broadcast message to all in room
-                        room.broadcast(JSON.stringify({
-                            type: "message",
-                            user: data.user || "Anonymous",
-                            message: data.message,
-                            timestamp: new Date().toISOString(),
-                        }), ws);
+                        room.broadcast(
+                            JSON.stringify({
+                                type: "message",
+                                user: data.user || "Anonymous",
+                                message: data.message,
+                                timestamp: new Date().toISOString(),
+                            }),
+                            ws,
+                        );
                     } else if (data.type === "join") {
                         // Join a specific room
-                        const targetRoom = roomManager.getRoom(data.room || "general");
+                        const targetRoom = roomManager.getRoom(
+                            data.room || "general",
+                        );
                         targetRoom.add(ws);
-                        ws.send(JSON.stringify({
-                            type: "system",
-                            message: `Joined room: ${data.room || "general"}`,
-                        }));
+                        ws.send(
+                            JSON.stringify({
+                                type: "system",
+                                message: `Joined room: ${data.room || "general"}`,
+                            }),
+                        );
                     }
                 } catch (error) {
                     console.error("Error handling WebSocket message:", error);
-                    ws.send(JSON.stringify({
-                        type: "error",
-                        message: "Invalid message format",
-                    }));
+                    ws.send(
+                        JSON.stringify({
+                            type: "error",
+                            message: "Invalid message format",
+                        }),
+                    );
                 }
             },
 
@@ -108,4 +123,3 @@ export default {
 interface Env {
     // Add your environment bindings here
 }
-

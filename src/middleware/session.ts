@@ -28,18 +28,13 @@ export function attachSessionCookie(
     session: Session,
 ): Response {
     const cookieOptions = session.getCookieOptions();
-    return setCookie(
-        response,
-        cookieOptions.name,
-        cookieOptions.value,
-        {
-            maxAge: cookieOptions.maxAge,
-            httpOnly: cookieOptions.httpOnly,
-            secure: cookieOptions.secure,
-            sameSite: cookieOptions.sameSite,
-            path: cookieOptions.path,
-        },
-    );
+    return setCookie(response, cookieOptions.name, cookieOptions.value, {
+        maxAge: cookieOptions.maxAge,
+        httpOnly: cookieOptions.httpOnly,
+        secure: cookieOptions.secure,
+        sameSite: cookieOptions.sameSite,
+        path: cookieOptions.path,
+    });
 }
 
 /**
@@ -79,4 +74,3 @@ export function createFlash(session: Session): FlashMessages {
         },
     };
 }
-

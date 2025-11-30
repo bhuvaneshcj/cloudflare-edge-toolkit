@@ -10,9 +10,22 @@ export type WebSocketMessage = string | ArrayBuffer | ArrayBufferView;
  */
 export interface WebSocketHandler {
     onOpen?: (ws: WebSocket, request: Request) => void | Promise<void>;
-    onMessage?: (ws: WebSocket, message: WebSocketMessage, request: Request) => void | Promise<void>;
-    onClose?: (ws: WebSocket, code: number, reason: string, request: Request) => void | Promise<void>;
-    onError?: (ws: WebSocket, error: Error, request: Request) => void | Promise<void>;
+    onMessage?: (
+        ws: WebSocket,
+        message: WebSocketMessage,
+        request: Request,
+    ) => void | Promise<void>;
+    onClose?: (
+        ws: WebSocket,
+        code: number,
+        reason: string,
+        request: Request,
+    ) => void | Promise<void>;
+    onError?: (
+        ws: WebSocket,
+        error: Error,
+        request: Request,
+    ) => void | Promise<void>;
 }
 
 /**
@@ -63,7 +76,9 @@ export function upgradeWebSocket(
                 if (handler.onError) {
                     handler.onError(
                         server,
-                        error instanceof Error ? error : new Error(String(error)),
+                        error instanceof Error
+                            ? error
+                            : new Error(String(error)),
                         request,
                     );
                 }
@@ -84,11 +99,7 @@ export function upgradeWebSocket(
     server.addEventListener("error", (event) => {
         if (handler.onError) {
             try {
-                handler.onError(
-                    server,
-                    new Error("WebSocket error"),
-                    request,
-                );
+                handler.onError(server, new Error("WebSocket error"), request);
             } catch (error) {
                 console.error("WebSocket error handler error:", error);
             }
@@ -102,8 +113,9 @@ export function upgradeWebSocket(
         headers: {
             Upgrade: "websocket",
             Connection: "Upgrade",
-            ...(options.protocol && { "Sec-WebSocket-Protocol": options.protocol }),
+            ...(options.protocol && {
+                "Sec-WebSocket-Protocol": options.protocol,
+            }),
         },
     });
 }
-
