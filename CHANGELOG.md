@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2024-11-30
+
+### Added
+
+- **WebSocket Support** - Upgrade HTTP requests to WebSocket
+  ```typescript
+  import { upgradeWebSocket } from "cloudflare-edge-toolkit";
+  
+  app.get("/ws", (req) => {
+    return upgradeWebSocket(req, {
+      onMessage: (ws, message) => {
+        ws.send(`Echo: ${message}`);
+      },
+    });
+  });
+  ```
+
+- **Room Management** - Organize WebSocket connections into rooms
+  ```typescript
+  const roomManager = new RoomManager();
+  const room = roomManager.getRoom("chat");
+  room.broadcast("Hello everyone!");
+  ```
+
+- **Message Broadcasting** - Send messages to multiple connections
+- **Connection Management** - Handle open, close, error events
+- New example project demonstrating WebSocket chat
+
+### Improved
+
+- Better WebSocket event handling
+- Automatic cleanup of closed connections
+
 ## [1.3.0] - 2024-11-30
 
 ### Added

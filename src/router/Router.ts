@@ -193,6 +193,25 @@ export class Router {
     }
 
     /**
+     * Register a WebSocket route
+     * Note: WebSocket routes should use upgradeWebSocket function directly
+     * This method is for documentation/type purposes
+     */
+    ws(
+        path: string,
+        handler: (
+            ws: WebSocket,
+            request: RequestWithParams,
+            env?: Env,
+            ctx?: ExecutionContext,
+        ) => void | Promise<void>,
+    ): this {
+        // Store WebSocket handler for this path
+        // WebSocket upgrade must be handled manually using upgradeWebSocket
+        return this;
+    }
+
+    /**
      * Register a route for all HTTP methods
      */
     all(path: string, ...handlers: Handler[]): this {

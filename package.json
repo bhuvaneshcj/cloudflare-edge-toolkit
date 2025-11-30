@@ -1,6 +1,6 @@
 {
     "name": "cloudflare-edge-toolkit",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "A TypeScript-first developer toolkit for Cloudflare Workers with router, middleware, storage wrappers, and utilities",
     "type": "module",
     "main": "./dist/index.js",
