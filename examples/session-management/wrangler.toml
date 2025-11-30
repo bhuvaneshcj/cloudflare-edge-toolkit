@@ -1,0 +1,12 @@
+name = "session-management"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "SESSIONS_KV"
+id = "your-kv-namespace-id"
+preview_id = "your-kv-namespace-preview-id"
+
+[vars]
+SESSION_SECRET = "your-secret-key-change-in-production"
+

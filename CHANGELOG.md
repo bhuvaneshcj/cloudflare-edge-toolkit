@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-11-30
+
+### Added
+
+- **Session Management** - KV-backed session storage
+  ```typescript
+  app.use(session({
+    kv: env.SESSIONS_KV,
+    secret: env.SESSION_SECRET,
+    maxAge: 3600,
+  }));
+  ```
+
+- **Session Class** - Full session API with get, set, delete, clear
+- **Session Middleware** - Automatic session loading and saving
+- **Cookie-based Sessions** - Secure cookie handling
+- **Flash Messages** - One-time messages stored in session
+- **Session Lifecycle** - Create, load, save, destroy sessions
+- New example project demonstrating session management
+
+### Improved
+
+- Better session security with configurable options
+- Automatic session expiration via KV TTL
+
 ## [1.2.0] - 2024-11-30
 
 ### Added

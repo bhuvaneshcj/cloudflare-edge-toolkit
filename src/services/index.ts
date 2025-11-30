@@ -31,3 +31,12 @@ export { matchCache, putCache, deleteCache, CacheService } from "./cache.js";
 
 // Auth exports
 export { signJWT, verifyJWT, decodeJWT, AuthService } from "./auth.js";
+
+// Session exports
+export {
+    Session,
+    createSession,
+    getSession,
+    type SessionData,
+    type SessionOptions,
+} from "./session.js";

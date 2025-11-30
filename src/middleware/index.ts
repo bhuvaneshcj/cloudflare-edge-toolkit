@@ -34,3 +34,11 @@ export {
     addCompressionHeaders,
     type CompressionOptions,
 } from "./compression.js";
+
+// Session middleware
+export {
+    session,
+    attachSessionCookie,
+    createFlash,
+    type FlashMessages,
+} from "./session.js";
