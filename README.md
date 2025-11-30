@@ -4,10 +4,14 @@ A TypeScript-first developer toolkit for Cloudflare Workers that provides a clas
 
 ## Features
 
-- **Class-based Router** - Express-like routing with path parameters and middleware
-- **Middleware System** - Built-in middleware (CORS, logging, auth, rate limiting) and custom middleware support
+- **Class-based Router** - Express-like routing with path parameters, route groups, sub-routers, and middleware
+- **Middleware System** - Built-in middleware (CORS, logging, auth, rate limiting, security headers, validation, sessions) and custom middleware support
 - **Storage Wrappers** - Type-safe wrappers for KV, R2, D1, and Cache API
+- **D1 ORM** - Query builder, model classes, relationships, and migrations
+- **Session Management** - KV-backed sessions with cookie support and flash messages
+- **WebSocket Support** - Upgrade HTTP to WebSocket with room management and broadcasting
 - **Authentication** - JWT authentication utilities and middleware
+- **Testing Utilities** - Request builders, mock services (KV/R2/D1), and response assertions
 - **Utilities** - JSON helpers, error classes, request/response utilities, validation
 - **TypeScript First** - Full type safety with comprehensive type definitions
 - **Edge Optimized** - Lightweight and optimized for Cloudflare Workers runtime
@@ -406,6 +410,87 @@ app.post(
 );
 ```
 
+### Session Management
+
+```typescript
+import { session, attachSessionCookie } from "cloudflare-edge-toolkit";
+
+// Session middleware
+app.use(
+    session({
+        kv: env.SESSIONS_KV,
+        secret: env.SESSION_SECRET,
+        maxAge: 3600, // 1 hour
+    }),
+);
+
+// Use session in handlers
+app.get("/profile", async (req) => {
+    const session = req.session;
+    const userId = session.get("userId");
+
+    await session.save();
+    const response = json({ userId });
+    return attachSessionCookie(response, session);
+});
+```
+
+### WebSocket Support
+
+```typescript
+import { upgradeWebSocket, RoomManager } from "cloudflare-edge-toolkit";
+
+const roomManager = new RoomManager();
+
+app.get("/ws", (req) => {
+    return upgradeWebSocket(req, {
+        onOpen: (ws) => {
+            const room = roomManager.getRoom("chat");
+            room.add(ws);
+        },
+        onMessage: (ws, message) => {
+            const room = roomManager.getRoom("chat");
+            room.broadcast(message, ws);
+        },
+        onClose: (ws) => {
+            // Remove from rooms
+        },
+    });
+});
+```
+
+## Testing Utilities
+
+```typescript
+import {
+    createTestWorker,
+    get,
+    post,
+    assertResponse,
+    createMockKV,
+    createMockR2,
+    createMockD1,
+} from "cloudflare-edge-toolkit";
+
+// Create test worker
+const worker = createTestWorker(router);
+
+// Set up mocks
+const kv = worker.kv("MY_KV");
+const r2 = worker.r2("MY_BUCKET");
+const db = worker.d1("MY_DB");
+
+// Make requests
+const response = await worker.fetch(get("/users"));
+const postResponse = await worker.fetch(
+    post("/users", { name: "John" }),
+);
+
+// Assert responses
+await assertResponse(response).status(200).json();
+await assertResponse(postResponse).status(201).hasHeader("Location");
+```
+
 ## Utilities
 
 ### JSON Responses
@@ -466,6 +551,10 @@ Check out the `examples/` directory for complete examples:
 - **basic-worker** - Simple router and KV operations
 - **full-stack-app** - Complete app with auth, CRUD, and file uploads
 - **api-with-storage** - RESTful API with caching and rate limiting
+- **v1.1-features** - Demonstrates route groups, sub-routers, validation, and security headers
+- **d1-orm** - D1 database with query builder, models, and migrations
+- **session-management** - KV-backed sessions with flash messages
+- **websocket-chat** - Real-time chat with WebSocket and room management
 
 ## TypeScript
 
@@ -482,14 +571,14 @@ import type {
 
 ## Roadmap
 
-### v1.1.0 - v1.5.0
+### ✅ v1.1.0 - v1.5.0 (Completed)
 
-- [ ] Advanced router features (route groups, sub-routers)
-- [ ] D1 ORM with query builder
-- [ ] Session management
-- [ ] WebSocket support
-- [ ] Durable Objects helpers
-- [ ] Testing utilities
+- [x] Advanced router features (route groups, sub-routers, route constraints)
+- [x] Security headers and request validation middleware
+- [x] D1 ORM with query builder and migrations
+- [x] Session management with KV-backed storage
+- [x] WebSocket support with room management
+- [x] Testing utilities with mocks and assertions
 
 ### v2.0.0+
 
