@@ -15,6 +15,7 @@
 ### 1. Update Repository URLs
 
 Edit `package.json` and update:
+
 ```json
 "repository": {
   "type": "git",
@@ -29,6 +30,7 @@ Edit `package.json` and update:
 ### 2. Add Author Information (Optional)
 
 Edit `package.json`:
+
 ```json
 "author": "Your Name <your.email@example.com>"
 ```
@@ -73,6 +75,7 @@ npm publish --dry-run
 ```
 
 Should include:
+
 - `dist/` (all compiled files)
 - `README.md`
 - `LICENSE`
@@ -92,6 +95,7 @@ npm whoami
 ### 7. Verify Package Name Availability
 
 The package name `cloudflare-edge-toolkit` should be available. If not, you may need to:
+
 - Use a scoped package: `@yourusername/cloudflare-edge-toolkit`
 - Choose a different name
 
@@ -113,21 +117,22 @@ npm publish --access public
 ### After Publishing
 
 1. **Create Git Tag**:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
+
+    ```bash
+    git tag v1.0.0
+    git push origin v1.0.0
+    ```
 
 2. **Create GitHub Release**:
-   - Go to GitHub repository
-   - Create a new release
-   - Tag: `v1.0.0`
-   - Title: `v1.0.0 - Initial Release`
-   - Description: Copy from CHANGELOG.md
+    - Go to GitHub repository
+    - Create a new release
+    - Tag: `v1.0.0`
+    - Title: `v1.0.0 - Initial Release`
+    - Description: Copy from CHANGELOG.md
 
 3. **Verify on npm**:
-   - Visit: https://www.npmjs.com/package/cloudflare-edge-toolkit
-   - Verify package is published correctly
+    - Visit: https://www.npmjs.com/package/cloudflare-edge-toolkit
+    - Verify package is published correctly
 
 ## 📝 Post-Publish Tasks
 
@@ -170,4 +175,3 @@ npm publish
 ---
 
 **Ready to publish!** 🎉
-

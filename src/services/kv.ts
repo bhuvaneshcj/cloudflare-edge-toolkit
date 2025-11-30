@@ -8,7 +8,6 @@
  * Get a value from KV namespace
  */
 export async function getKV<T = string>(
-    // @ts-expect-error - KVNamespace is from @cloudflare/workers-types (peer dependency)
     namespace: KVNamespace,
     key: string,
 ): Promise<T | null> {
@@ -115,15 +114,17 @@ export async function listKV(
         cursor?: string;
     },
 ): Promise<{
-    keys: KVKey[];
+    keys: Array<{ name: string; expiration?: number; metadata?: unknown }>;
     listComplete: boolean;
     cursor?: string;
 }> {
     const result = await namespace.list(options);
     return {
         keys: result.keys,
-        listComplete: result.listComplete,
-        cursor: result.cursor,
+        listComplete: result.list_complete,
+        cursor: result.list_complete
+            ? undefined
+            : (result as { cursor?: string }).cursor,
     };
 }
 
@@ -168,7 +169,7 @@ export class KVService {
         limit?: number;
         cursor?: string;
     }): Promise<{
-        keys: KVKey[];
+        keys: Array<{ name: string; expiration?: number; metadata?: unknown }>;
         listComplete: boolean;
         cursor?: string;
     }> {

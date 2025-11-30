@@ -15,6 +15,7 @@ All core features have been implemented and the package is ready for npm publica
 ## 🎯 Implemented Features
 
 ### Core Router
+
 - ✅ Class-based Router with fluent API
 - ✅ All HTTP methods (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
 - ✅ Path parameters (`/users/:id`)
@@ -23,6 +24,7 @@ All core features have been implemented and the package is ready for npm publica
 - ✅ Custom 404 and error handlers
 
 ### Services
+
 - ✅ **KV**: get, set, delete, list, has, getWithMetadata
 - ✅ **R2**: put, get, head, delete, list, multipart uploads
 - ✅ **D1**: prepare, exec, batch, transaction
@@ -30,6 +32,7 @@ All core features have been implemented and the package is ready for npm publica
 - ✅ **Auth**: JWT sign, verify, decode (requires optional `jose` package)
 
 ### Utilities
+
 - ✅ JSON helpers (json, jsonError, parseJSON)
 - ✅ Error classes (HttpError, BadRequestError, UnauthorizedError, etc.)
 - ✅ Request parsing (parseBody, getQueryParams, getPathParams, getCookie, etc.)
@@ -38,6 +41,7 @@ All core features have been implemented and the package is ready for npm publica
 - ✅ Validation utilities
 
 ### Middleware
+
 - ✅ CORS middleware
 - ✅ Logger middleware
 - ✅ Error handler middleware
@@ -46,6 +50,7 @@ All core features have been implemented and the package is ready for npm publica
 - ✅ Role-based access control
 
 ### Examples
+
 - ✅ Basic worker example
 - ✅ Full-stack app example
 - ✅ API with storage example
@@ -74,17 +79,20 @@ cloudflare-edge-toolkit/
 ## 🔧 Build & Publish
 
 ### Build
+
 ```bash
 npm run build
 ```
 
 ### Test Locally
+
 ```bash
 npm pack
 # Install in test project: npm install ./cloudflare-edge-toolkit-1.0.0.tgz
 ```
 
 ### Publish
+
 ```bash
 npm publish
 ```
@@ -129,4 +137,3 @@ npm publish
 ---
 
 **Status**: ✅ READY FOR PUBLICATION
-

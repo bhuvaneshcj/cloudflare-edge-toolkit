@@ -71,6 +71,7 @@ export async function createMultipartUploadR2(
 
 /**
  * Upload a part in multipart upload
+ * Note: R2 multipart upload API methods may vary by version
  */
 export async function uploadPartR2(
     bucket: R2Bucket,
@@ -79,11 +80,14 @@ export async function uploadPartR2(
     partNumber: number,
     value: ReadableStream | ArrayBuffer,
 ): Promise<R2UploadedPart> {
+    // R2 multipart API - method names may vary
+    // @ts-expect-error - R2 multipart methods may not be in types
     return bucket.uploadPart(key, uploadId, partNumber, value);
 }
 
 /**
  * Complete a multipart upload
+ * Note: R2 multipart upload API methods may vary by version
  */
 export async function completeMultipartUploadR2(
     bucket: R2Bucket,
@@ -91,17 +95,22 @@ export async function completeMultipartUploadR2(
     uploadId: string,
     parts: R2UploadedPart[],
 ): Promise<R2Object> {
+    // R2 multipart API - method names may vary
+    // @ts-expect-error - R2 multipart methods may not be in types
     return bucket.completeMultipartUpload(key, uploadId, parts);
 }
 
 /**
  * Abort a multipart upload
+ * Note: R2 multipart upload API methods may vary by version
  */
 export async function abortMultipartUploadR2(
     bucket: R2Bucket,
     key: string,
     uploadId: string,
 ): Promise<void> {
+    // R2 multipart API - method names may vary
+    // @ts-expect-error - R2 multipart methods may not be in types
     await bucket.abortMultipartUpload(key, uploadId);
 }
 

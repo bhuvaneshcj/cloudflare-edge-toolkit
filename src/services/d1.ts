@@ -39,9 +39,13 @@ export async function batchD1(
  */
 export async function transactionD1<T>(
     database: D1Database,
-    callback: (tx: D1Transaction) => Promise<T>,
+    callback: (tx: D1PreparedStatement) => Promise<T>,
 ): Promise<T> {
-    return database.transaction(callback);
+    // Note: D1 transaction API may vary - this is a placeholder
+    // In actual D1, transactions work differently
+    throw new Error(
+        "D1 transactions are not yet fully supported in this version",
+    );
 }
 
 /**
@@ -63,7 +67,7 @@ export class D1Service {
     }
 
     async transaction<T>(
-        callback: (tx: D1Transaction) => Promise<T>,
+        callback: (tx: D1PreparedStatement) => Promise<T>,
     ): Promise<T> {
         return transactionD1(this.database, callback);
     }

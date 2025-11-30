@@ -123,7 +123,7 @@ export class Router {
             const route = this.findRoute(method, pathname);
 
             if (!route) {
-                return this.handleNotFound(request, env, ctx);
+                return await this.handleNotFound(request, env, ctx);
             }
 
             // Extract path parameters
@@ -149,7 +149,7 @@ export class Router {
             }
 
             // If no handler returned a response, return 404
-            return this.handleNotFound(request, env, ctx);
+            return await this.handleNotFound(request, env, ctx);
         } catch (error) {
             return this.handleError(
                 error instanceof Error ? error : new Error(String(error)),
@@ -231,16 +231,19 @@ export class Router {
     /**
      * Handle 404 Not Found
      */
-    private handleNotFound(
+    private async handleNotFound(
         request: Request,
         env?: Env,
         ctx?: ExecutionContext,
-    ): Response {
+    ): Promise<Response> {
         if (this.notFoundHandler) {
             const reqWithParams = request as RequestWithParams;
             reqWithParams.params = {};
             reqWithParams.query = new URL(request.url).searchParams;
-            return this.notFoundHandler(reqWithParams, env, ctx);
+            const result = await this.notFoundHandler(reqWithParams, env, ctx);
+            if (result) {
+                return result;
+            }
         }
 
         return new Response("Not Found", { status: 404 });
@@ -249,17 +252,25 @@ export class Router {
     /**
      * Handle errors
      */
-    private handleError(
+    private async handleError(
         error: Error,
         request: Request,
         env?: Env,
         ctx?: ExecutionContext,
-    ): Response {
+    ): Promise<Response> {
         if (this.errorHandler) {
             const reqWithParams = request as RequestWithParams;
             reqWithParams.params = {};
             reqWithParams.query = new URL(request.url).searchParams;
-            return this.errorHandler(error, reqWithParams, env, ctx);
+            const result = await this.errorHandler(
+                error,
+                reqWithParams,
+                env,
+                ctx,
+            );
+            if (result) {
+                return result;
+            }
         }
 
         return new Response(

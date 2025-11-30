@@ -60,10 +60,8 @@ export function getEnvBoolean(
     if (typeof value === "boolean") {
         return value;
     }
-    if (typeof value === "string") {
-        return value.toLowerCase() === "true" || value === "1";
-    }
-    return Boolean(value);
+    const stringValue = String(value);
+    return stringValue.toLowerCase() === "true" || stringValue === "1";
 }
 
 /**

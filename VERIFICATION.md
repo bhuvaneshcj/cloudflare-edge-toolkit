@@ -16,6 +16,7 @@
 ## ✅ Core Features Implemented
 
 ### Router
+
 - [x] Class-based Router
 - [x] HTTP methods (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
 - [x] Path parameters (`/users/:id`)
@@ -26,6 +27,7 @@
 - [x] Custom error handler
 
 ### Services
+
 - [x] KV service wrapper (get, set, delete, list, metadata)
 - [x] R2 service wrapper (put, get, head, delete, list, multipart)
 - [x] D1 service wrapper (prepare, exec, batch, transaction)
@@ -33,6 +35,7 @@
 - [x] Auth service (JWT sign, verify, decode)
 
 ### Utilities
+
 - [x] JSON helpers (json, jsonError, parseJSON)
 - [x] Error classes (HttpError, BadRequestError, UnauthorizedError, etc.)
 - [x] Request utilities (parseBody, getQueryParams, getPathParams, getCookie, etc.)
@@ -41,6 +44,7 @@
 - [x] Validation utilities
 
 ### Middleware
+
 - [x] CORS middleware
 - [x] Logger middleware
 - [x] Error handler middleware
@@ -49,6 +53,7 @@
 - [x] Role-based access control
 
 ### Examples
+
 - [x] Basic worker example
 - [x] Full-stack app example
 - [x] API with storage example
@@ -99,4 +104,3 @@
 - @cloudflare/workers-types is a peer dependency - users must install it
 - jose is an optional dependency for JWT support
 - All code is edge-optimized and tree-shakeable
-

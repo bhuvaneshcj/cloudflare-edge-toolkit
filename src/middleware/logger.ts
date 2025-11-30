@@ -18,8 +18,16 @@ export function logger(options: LoggerOptions = {}): Handler {
     return async (request) => {
         // Request and URL are available in Workers runtime
         // Using type assertions to avoid requiring @cloudflare/workers-types at compile time
-        const req = request as unknown as { url: string; method: string; headers: { forEach: (fn: (value: string, key: string) => void) => void } };
-        const url = new (globalThis as { URL?: new (url: string) => { pathname: string } }).URL!(req.url);
+        const req = request as unknown as {
+            url: string;
+            method: string;
+            headers: {
+                forEach: (fn: (value: string, key: string) => void) => void;
+            };
+        };
+        const url = new (
+            globalThis as { URL?: new (url: string) => { pathname: string } }
+        ).URL!(req.url);
 
         const logData: Record<string, unknown> = {
             method: req.method,
@@ -60,8 +68,13 @@ function log(
 
     // Use console (available in Workers runtime)
     // @ts-expect-error - console is available in Workers runtime but not in all TypeScript environments
-    const consoleObj = globalThis.console || { log: () => {}, debug: () => {}, warn: () => {}, error: () => {} };
-    
+    const consoleObj = globalThis.console || {
+        log: () => {},
+        debug: () => {},
+        warn: () => {},
+        error: () => {},
+    };
+
     switch (level) {
         case "debug":
             consoleObj.debug(logMessage);
@@ -87,10 +100,9 @@ export function simpleLogger(): Handler {
     return async (request) => {
         // Request and URL are available in Workers runtime
         const req = request as unknown as { url: string; method: string };
-        // @ts-expect-error - URL is available in Workers runtime
-        const url = new URL(req.url);
-        // @ts-expect-error - console is available in Workers runtime
-        const consoleObj = globalThis.console || { log: () => {} };
+        const url = new (globalThis as { URL?: new (url: string) => { pathname: string } }).URL!(req.url);
+        // console is available in Workers runtime
+        const consoleObj = (globalThis as { console?: { log: (msg: string) => void } }).console || { log: () => {} };
         consoleObj.log(`[${req.method}] ${url.pathname}`);
         return;
     };

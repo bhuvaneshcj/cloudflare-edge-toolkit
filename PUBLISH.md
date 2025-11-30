@@ -44,13 +44,13 @@ npm install /path/to/cloudflare-edge-toolkit-1.0.0.tgz
 
 1. Create an npm account if you don't have one: https://www.npmjs.com/signup
 2. Login to npm:
-   ```bash
-   npm login
-   ```
+    ```bash
+    npm login
+    ```
 3. Verify you're logged in:
-   ```bash
-   npm whoami
-   ```
+    ```bash
+    npm whoami
+    ```
 
 ### Publishing
 
@@ -83,10 +83,11 @@ npm version major
 ## Post-Publish
 
 1. Create a git tag:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
+
+    ```bash
+    git tag v1.0.0
+    git push origin v1.0.0
+    ```
 
 2. Update CHANGELOG.md with the published version
 
@@ -97,4 +98,3 @@ npm version major
 - **Error: You must verify your email**: Verify your email on npmjs.com
 - **Error: Package name already exists**: Choose a different package name or use a scoped package (@yourname/cloudflare-edge-toolkit)
 - **Error: Invalid package.json**: Check that all required fields are present
-

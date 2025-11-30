@@ -11,13 +11,13 @@ export type Middleware = (
 ) => Promise<Response | void> | Response | void;
 
 /**
- * Route handler type - must return Response
+ * Route handler type - can return Response or void (to continue to next handler)
  */
 export type Handler = (
     req: RequestWithParams,
     env?: Env,
     ctx?: ExecutionContext,
-) => Promise<Response> | Response;
+) => Promise<Response | void> | Response | void;
 
 /**
  * Error handler type

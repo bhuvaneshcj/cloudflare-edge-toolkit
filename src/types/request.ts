@@ -6,8 +6,11 @@ export interface RequestWithParams extends Request {
     query?: URLSearchParams;
 }
 
-export interface ParsedRequest extends Request {
+export interface ParsedRequest {
     params: Record<string, string>;
     query: URLSearchParams;
     body?: unknown;
+    url: string;
+    method: string;
+    headers: Headers;
 }
