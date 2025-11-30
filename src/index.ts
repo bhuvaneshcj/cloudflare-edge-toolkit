@@ -4,7 +4,7 @@
  */
 
 // Router exports
-export { Router } from "./router/index.js";
+export { Router, RouteGroup } from "./router/index.js";
 export type {
     Middleware,
     Handler,

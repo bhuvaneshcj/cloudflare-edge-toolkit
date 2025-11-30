@@ -5,15 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2024-11-30
 
-### Planned for v1.1.0
-- Route groups/namespaces
-- Sub-routers
-- Security headers middleware
-- Request validation middleware
-- Compression middleware
-- Route constraints with regex
+### Added
+
+- **Route Groups** - Organize routes with common prefixes using `app.group()`
+  ```typescript
+  const api = app.group("/api");
+  api.get("/users", handler);
+  ```
+
+- **Sub-routers** - Mount separate routers using `app.use(path, router)`
+  ```typescript
+  const userRouter = new Router();
+  app.use("/users", userRouter);
+  ```
+
+- **Route Constraints** - Regex-based path parameter validation
+  ```typescript
+  app.get("/posts/:id(\\d+)", handler); // Only numeric IDs
+  ```
+
+- **Security Headers Middleware** - Add security headers to responses
+  ```typescript
+  app.use(securityHeaders({
+    contentSecurityPolicy: "default-src 'self'",
+    xFrameOptions: "DENY",
+  }));
+  ```
+
+- **Request Validation Middleware** - Validate request body, query, and params
+  ```typescript
+  app.post("/users", validate({
+    body: { name: "string", email: "email" }
+  }), handler);
+  ```
+
+- **Compression Middleware** - Compression utilities (Cloudflare handles compression automatically)
+- **Nested Route Groups** - Create nested groups for better organization
+- New example project demonstrating v1.1.0 features
+
+### Improved
+
+- Enhanced path parsing with regex constraint support
+- Better TypeScript types for route groups
+- Improved middleware composition
 
 ## [1.0.0] - 2024-11-30
 

@@ -12,3 +12,25 @@ export { rateLimit, rateLimitKV, type RateLimitOptions } from "./rate-limit.js";
 
 // Auth middleware
 export { auth, requireRole, type AuthOptions } from "./auth.js";
+
+// Security headers middleware
+export {
+    securityHeaders,
+    addSecurityHeaders,
+    type SecurityHeadersOptions,
+} from "./security.js";
+
+// Validation middleware
+export {
+    validate,
+    type ValidationOptions,
+    type ValidationSchema,
+    type ValidationRule,
+} from "./validate.js";
+
+// Compression middleware
+export {
+    compression,
+    addCompressionHeaders,
+    type CompressionOptions,
+} from "./compression.js";

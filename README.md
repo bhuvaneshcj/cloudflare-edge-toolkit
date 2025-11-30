@@ -90,10 +90,53 @@ app.put("/data/:id", handler);
 app.delete("/data/:id", handler);
 ```
 
+### Route Groups
+
+```typescript
+import { Router } from "cloudflare-edge-toolkit";
+
+const app = new Router();
+
+// Create a route group
+const api = app.group("/api");
+api.get("/users", handler);
+api.post("/users", handler);
+
+// Nested groups
+const v1 = api.group("/v1");
+v1.get("/posts", handler);
+```
+
+### Sub-routers
+
+```typescript
+import { Router } from "cloudflare-edge-toolkit";
+
+const app = new Router();
+const userRouter = new Router();
+
+userRouter.get("/", listUsers);
+userRouter.get("/:id", getUser);
+userRouter.post("/", createUser);
+
+// Mount sub-router
+app.use("/users", userRouter);
+```
+
+### Route Constraints
+
+```typescript
+// Only numeric IDs
+app.get("/posts/:id(\\d+)", handler);
+
+// Only alphanumeric
+app.get("/users/:slug([a-z0-9-]+)", handler);
+```
+
 ### Middleware
 
 ```typescript
-import { Router, cors, logger, auth } from "cloudflare-edge-toolkit";
+import { Router, cors, logger, auth, securityHeaders, validate } from "cloudflare-edge-toolkit";
 
 const app = new Router();
 
@@ -104,10 +147,16 @@ app.use(logger());
 // Route-specific middleware
 app.get("/protected", auth({ secret: "your-secret" }), handler);
 
-// Custom middleware
-app.use(async (req) => {
-    console.log(`${req.method} ${req.url}`);
-});
+// Security headers
+app.use(securityHeaders({
+    contentSecurityPolicy: "default-src 'self'",
+    xFrameOptions: "DENY",
+}));
+
+// Request validation
+app.post("/users", validate({
+    body: { name: "string", email: "email" }
+}), handler);
 ```
 
 ### Error Handling
@@ -245,6 +294,32 @@ app.use(
 
 // Role-based access
 app.get("/admin", requireRole("admin"), handler);
+```
+
+### Security Headers
+
+```typescript
+import { securityHeaders } from "cloudflare-edge-toolkit";
+
+app.use(securityHeaders({
+    contentSecurityPolicy: "default-src 'self'",
+    xFrameOptions: "DENY",
+    strictTransportSecurity: "max-age=31536000",
+}));
+```
+
+### Request Validation
+
+```typescript
+import { validate } from "cloudflare-edge-toolkit";
+
+app.post("/register", validate({
+    body: {
+        name: { type: "string", required: true, min: 3 },
+        email: { type: "email", required: true },
+        age: { type: "number", min: 18, max: 100 },
+    },
+}), handler);
 ```
 
 ## Utilities

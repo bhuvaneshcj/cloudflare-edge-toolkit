@@ -3,6 +3,124 @@ import type { RequestWithParams } from "../types/request.js";
 import type { Handler, ErrorHandler, Route } from "./types.js";
 
 /**
+ * Route group for organizing routes with a common prefix
+ */
+export class RouteGroup {
+    constructor(
+        private router: Router,
+        private prefix: string,
+        private groupMiddleware: Handler[] = [],
+    ) {}
+
+    /**
+     * Register a GET route in this group
+     */
+    get(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("GET", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a POST route in this group
+     */
+    post(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("POST", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a PUT route in this group
+     */
+    put(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("PUT", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a DELETE route in this group
+     */
+    delete(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("DELETE", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a PATCH route in this group
+     */
+    patch(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("PATCH", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register an OPTIONS route in this group
+     */
+    options(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("OPTIONS", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a HEAD route in this group
+     */
+    head(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("HEAD", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Register a route for all HTTP methods in this group
+     */
+    all(path: string, ...handlers: Handler[]): this {
+        this.router.addRoute("*", this.prefix + path, [
+            ...this.groupMiddleware,
+            ...handlers,
+        ]);
+        return this;
+    }
+
+    /**
+     * Add middleware to this group
+     */
+    use(...middleware: Handler[]): this {
+        this.groupMiddleware.push(...middleware);
+        return this;
+    }
+
+    /**
+     * Create a nested route group
+     */
+    group(prefix: string, ...middleware: Handler[]): RouteGroup {
+        return new RouteGroup(
+            this.router,
+            this.prefix + prefix,
+            [...this.groupMiddleware, ...middleware],
+        );
+    }
+}
+
+/**
  * Class-based router for Cloudflare Workers
  */
 export class Router {
@@ -10,6 +128,21 @@ export class Router {
     private globalMiddleware: Handler[] = [];
     private notFoundHandler: Handler | null = null;
     private errorHandler: ErrorHandler | null = null;
+
+    /**
+     * Add a route (internal method, made public for RouteGroup)
+     */
+    addRoute(method: string, path: string, handlers: Handler[]): this {
+        const { pattern, paramNames } = this.parsePath(path);
+        this.routes.push({
+            method,
+            path,
+            pattern,
+            paramNames,
+            handlers,
+        });
+        return this;
+    }
 
     /**
      * Register a GET route
@@ -68,10 +201,23 @@ export class Router {
     }
 
     /**
-     * Add global middleware
+     * Add global middleware or mount a sub-router
      */
-    use(...middleware: Handler[]): this {
-        this.globalMiddleware.push(...middleware);
+    use(...args: Handler[]): this;
+    use(path: string, router: Router): this;
+    use(...args: Handler[] | [string, Router]): this {
+        if (args.length === 2 && typeof args[0] === "string" && args[1] instanceof Router) {
+            // Mount sub-router
+            const path = args[0];
+            const router = args[1];
+            for (const route of router.routes) {
+                const prefixedPath = path + route.path;
+                this.addRoute(route.method, prefixedPath, route.handlers);
+            }
+            return this;
+        }
+        // Add global middleware
+        this.globalMiddleware.push(...(args as Handler[]));
         return this;
     }
 
@@ -161,34 +307,42 @@ export class Router {
     }
 
     /**
-     * Add a route
+     * Create a route group with a common prefix
      */
-    private addRoute(method: string, path: string, handlers: Handler[]): this {
-        const { pattern, paramNames } = this.parsePath(path);
-        this.routes.push({
-            method,
-            path,
-            pattern,
-            paramNames,
-            handlers,
-        });
-        return this;
+    group(prefix: string, ...middleware: Handler[]): RouteGroup {
+        return new RouteGroup(this, prefix, middleware);
     }
 
     /**
      * Parse path pattern and create regex
+     * Supports :param and regex constraints like :id(\\d+)
      */
     private parsePath(path: string): {
         pattern: RegExp;
         paramNames: string[];
     } {
         const paramNames: string[] = [];
-        const patternString = path
-            .replace(/:([^/]+)/g, (_, paramName) => {
+        let patternString = path;
+
+        // Handle regex constraints: :param(regex)
+        patternString = patternString.replace(
+            /:(\w+)\(([^)]+)\)/g,
+            (_, paramName, regex) => {
                 paramNames.push(paramName);
-                return "([^/]+)";
-            })
-            .replace(/\*/g, ".*");
+                return `(${regex})`;
+            },
+        );
+
+        // Handle simple params: :param
+        patternString = patternString.replace(/:(\w+)/g, (_, paramName) => {
+            if (!paramNames.includes(paramName)) {
+                paramNames.push(paramName);
+            }
+            return "([^/]+)";
+        });
+
+        // Handle wildcards
+        patternString = patternString.replace(/\*/g, ".*");
 
         const pattern = new RegExp(`^${patternString}$`);
         return { pattern, paramNames };
