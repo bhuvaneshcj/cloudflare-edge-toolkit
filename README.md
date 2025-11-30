@@ -533,14 +533,22 @@ return jsonError("Error message", 400);
 
 ```typescript
 import {
+    HttpError,
     BadRequestError,
     UnauthorizedError,
+    ForbiddenError,
     NotFoundError,
     ValidationError,
+    InternalServerError,
+    errorToResponse,
 } from "cloudflare-edge-toolkit";
 
 throw new BadRequestError("Invalid input");
 throw new NotFoundError("User not found");
+throw new ForbiddenError("Access denied");
+
+// Convert any error to Response
+const response = errorToResponse(error, includeStack: true);
 ```
 
 ### Request Parsing
@@ -550,6 +558,8 @@ import {
     parseBody,
     getQueryParams,
     getPathParams,
+    getHeaders,
+    getHeader,
     getCookie,
     getCookies,
 } from "cloudflare-edge-toolkit";
@@ -557,18 +567,53 @@ import {
 const body = await parseBody<{ name: string }>(request);
 const query = getQueryParams(request);
 const id = getPathParams(request).id;
+const headers = getHeaders(request);
+const authHeader = getHeader(request, "Authorization");
 const token = getCookie(request, "token");
+const cookies = getCookies(request);
 ```
 
 ### Response Helpers
 
 ```typescript
-import { html, text, redirect, setCookie } from "cloudflare-edge-toolkit";
+import { html, text, redirect, setCookie, removeCookie } from "cloudflare-edge-toolkit";
 
 return html("<h1>Hello</h1>");
 return text("Plain text");
 return redirect("https://example.com");
-return setCookie(response, "token", "value", { httpOnly: true });
+const response = setCookie(response, "token", "value", { httpOnly: true });
+const cleared = removeCookie(response, "token");
+```
+
+### Validation Utilities
+
+```typescript
+import {
+    validateBody,
+    validateQueryParam,
+    validatePathParam,
+    validateEmail,
+    validateURL,
+    validateLength,
+    validateRange,
+} from "cloudflare-edge-toolkit";
+
+// Validate body
+const user = validateBody(body, (data): data is User => data.name !== undefined);
+
+// Validate query params
+const page = validateQueryParam(query, "page", false) || "1";
+
+// Validate path params
+const id = validatePathParam(params, "id");
+
+// Validate formats
+if (!validateEmail(email)) throw new ValidationError("Invalid email");
+if (!validateURL(url)) throw new ValidationError("Invalid URL");
+
+// Validate ranges
+if (!validateLength(name, 3, 50)) throw new ValidationError("Name must be 3-50 chars");
+if (!validateRange(age, 18, 100)) throw new ValidationError("Age must be 18-100");
 ```
 
 ## Examples
