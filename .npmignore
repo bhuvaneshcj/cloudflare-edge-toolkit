@@ -3,6 +3,7 @@ examples/
 tests/
 scripts/
 .github/
+docs/
 tsconfig.json
 *.ts
 !*.d.ts
