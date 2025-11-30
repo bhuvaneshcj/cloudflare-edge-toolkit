@@ -5,41 +5,90 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-11-30
+
+### Added
+
+- **D1 Query Builder** - Fluent API for building SQL queries
+
+    ```typescript
+    const users = await db
+        .query()
+        .select("id", "name")
+        .where("age", ">", 18)
+        .orderBy("name")
+        .limit(10)
+        .all();
+    ```
+
+- **Model Base Class** - ORM-style model definitions
+
+    ```typescript
+    class User extends Model {
+        static tableName = "users";
+    }
+    const user = await User.find(1);
+    ```
+
+- **Type-safe Queries** - Full TypeScript inference for query results
+- **CRUD Operations** - Create, read, update, delete methods on models
+- **Relationships** - hasOne, hasMany, belongsTo relationship helpers
+- **Migrations System** - Database migration runner with up/down support
+- **Fixed D1 Transactions** - Proper transaction support implementation
+- New example project demonstrating D1 ORM features
+
+### Improved
+
+- Enhanced D1 service wrapper with better transaction support
+- Better error handling in query builder
+- Improved TypeScript types for ORM
+
 ## [1.1.0] - 2024-11-30
 
 ### Added
 
 - **Route Groups** - Organize routes with common prefixes using `app.group()`
-  ```typescript
-  const api = app.group("/api");
-  api.get("/users", handler);
-  ```
+
+    ```typescript
+    const api = app.group("/api");
+    api.get("/users", handler);
+    ```
 
 - **Sub-routers** - Mount separate routers using `app.use(path, router)`
-  ```typescript
-  const userRouter = new Router();
-  app.use("/users", userRouter);
-  ```
+
+    ```typescript
+    const userRouter = new Router();
+    app.use("/users", userRouter);
+    ```
 
 - **Route Constraints** - Regex-based path parameter validation
-  ```typescript
-  app.get("/posts/:id(\\d+)", handler); // Only numeric IDs
-  ```
+
+    ```typescript
+    app.get("/posts/:id(\\d+)", handler); // Only numeric IDs
+    ```
 
 - **Security Headers Middleware** - Add security headers to responses
-  ```typescript
-  app.use(securityHeaders({
-    contentSecurityPolicy: "default-src 'self'",
-    xFrameOptions: "DENY",
-  }));
-  ```
+
+    ```typescript
+    app.use(
+        securityHeaders({
+            contentSecurityPolicy: "default-src 'self'",
+            xFrameOptions: "DENY",
+        }),
+    );
+    ```
 
 - **Request Validation Middleware** - Validate request body, query, and params
-  ```typescript
-  app.post("/users", validate({
-    body: { name: "string", email: "email" }
-  }), handler);
-  ```
+
+    ```typescript
+    app.post(
+        "/users",
+        validate({
+            body: { name: "string", email: "email" },
+        }),
+        handler,
+    );
+    ```
 
 - **Compression Middleware** - Compression utilities (Cloudflare handles compression automatically)
 - **Nested Route Groups** - Create nested groups for better organization

@@ -112,11 +112,10 @@ export class RouteGroup {
      * Create a nested route group
      */
     group(prefix: string, ...middleware: Handler[]): RouteGroup {
-        return new RouteGroup(
-            this.router,
-            this.prefix + prefix,
-            [...this.groupMiddleware, ...middleware],
-        );
+        return new RouteGroup(this.router, this.prefix + prefix, [
+            ...this.groupMiddleware,
+            ...middleware,
+        ]);
     }
 }
 
@@ -206,7 +205,11 @@ export class Router {
     use(...args: Handler[]): this;
     use(path: string, router: Router): this;
     use(...args: Handler[] | [string, Router]): this {
-        if (args.length === 2 && typeof args[0] === "string" && args[1] instanceof Router) {
+        if (
+            args.length === 2 &&
+            typeof args[0] === "string" &&
+            args[1] instanceof Router
+        ) {
             // Mount sub-router
             const path = args[0];
             const router = args[1];

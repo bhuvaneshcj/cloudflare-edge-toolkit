@@ -49,7 +49,9 @@ export function validate(options: ValidationOptions = {}): Handler {
                 }
             } catch (error) {
                 errors.body = [
-                    error instanceof Error ? error.message : "Invalid request body",
+                    error instanceof Error
+                        ? error.message
+                        : "Invalid request body",
                 ];
             }
         }
@@ -216,4 +218,3 @@ function validateType(value: unknown, type: string): string | null {
             return null;
     }
 }
-

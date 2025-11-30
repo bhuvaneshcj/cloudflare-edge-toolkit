@@ -100,9 +100,13 @@ export function simpleLogger(): Handler {
     return async (request) => {
         // Request and URL are available in Workers runtime
         const req = request as unknown as { url: string; method: string };
-        const url = new (globalThis as { URL?: new (url: string) => { pathname: string } }).URL!(req.url);
+        const url = new (
+            globalThis as { URL?: new (url: string) => { pathname: string } }
+        ).URL!(req.url);
         // console is available in Workers runtime
-        const consoleObj = (globalThis as { console?: { log: (msg: string) => void } }).console || { log: () => {} };
+        const consoleObj = (
+            globalThis as { console?: { log: (msg: string) => void } }
+        ).console || { log: () => {} };
         consoleObj.log(`[${req.method}] ${url.pathname}`);
         return;
     };

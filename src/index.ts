@@ -26,6 +26,9 @@ export * from "./utils/validation.js";
 // Middleware exports
 export * from "./middleware/index.js";
 
+// ORM exports
+export * from "./orm/index.js";
+
 // Type exports
 export type { Env, WorkerEnv } from "./types/env.js";
 export type { RequestWithParams, ParsedRequest } from "./types/request.js";

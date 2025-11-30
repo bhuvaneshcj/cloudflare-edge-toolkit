@@ -36,15 +36,31 @@ export async function batchD1(
 
 /**
  * Execute a transaction
+ * Note: D1 transactions use a callback pattern with a transaction object
  */
 export async function transactionD1<T>(
     database: D1Database,
-    callback: (tx: D1PreparedStatement) => Promise<T>,
+    callback: (tx: {
+        prepare: (query: string) => D1PreparedStatement;
+        exec: (query: string) => Promise<D1ExecResult>;
+    }) => Promise<T>,
 ): Promise<T> {
-    // Note: D1 transaction API may vary - this is a placeholder
-    // In actual D1, transactions work differently
-    throw new Error(
-        "D1 transactions are not yet fully supported in this version",
+    // D1 transactions work by passing a transaction object to the callback
+    // The transaction object has prepare and exec methods
+    // @ts-expect-error - D1Database.transaction exists but may not be in types
+    return database.transaction(
+        async (tx: {
+            prepare: (query: string) => D1PreparedStatement;
+            exec: (query: string) => Promise<D1ExecResult>;
+        }) => {
+            const txWrapper = {
+                prepare: (query: string) => tx.prepare(query),
+                exec: async (query: string) => {
+                    return tx.exec(query);
+                },
+            };
+            return callback(txWrapper);
+        },
     );
 }
 
@@ -67,7 +83,10 @@ export class D1Service {
     }
 
     async transaction<T>(
-        callback: (tx: D1PreparedStatement) => Promise<T>,
+        callback: (tx: {
+            prepare: (query: string) => D1PreparedStatement;
+            exec: (query: string) => Promise<D1ExecResult>;
+        }) => Promise<T>,
     ): Promise<T> {
         return transactionD1(this.database, callback);
     }

@@ -21,33 +21,38 @@ npx wrangler dev
 ## API Endpoints
 
 ### Route Groups
+
 - `GET /api/status` - API status
 - `GET /api/version` - API version
 - `GET /api/v1/users` - List users (nested group)
 - `GET /api/v1/users/:id` - Get user by ID
 
 ### Sub-routers
+
 - `GET /users` - List users (from sub-router)
 - `GET /users/:id` - Get user by ID (from sub-router)
 - `POST /users` - Create user (from sub-router)
 
 ### Route Constraints
+
 - `GET /posts/:id` - Only matches numeric IDs (e.g., `/posts/123`)
 
 ### Security Headers
+
 - `GET /secure` - Endpoint with security headers
 
 ### Validation
+
 - `POST /register` - Register with validation
-  ```json
-  {
-    "name": "John Doe",
-    "email": "john@example.com",
-    "age": 25
-  }
-  ```
+    ```json
+    {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": 25
+    }
+    ```
 
 ### Admin Group
+
 - `GET /admin/dashboard` - Admin dashboard
 - `GET /admin/settings` - Admin settings
-

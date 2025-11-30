@@ -136,7 +136,14 @@ app.get("/users/:slug([a-z0-9-]+)", handler);
 ### Middleware
 
 ```typescript
-import { Router, cors, logger, auth, securityHeaders, validate } from "cloudflare-edge-toolkit";
+import {
+    Router,
+    cors,
+    logger,
+    auth,
+    securityHeaders,
+    validate,
+} from "cloudflare-edge-toolkit";
 
 const app = new Router();
 
@@ -148,15 +155,21 @@ app.use(logger());
 app.get("/protected", auth({ secret: "your-secret" }), handler);
 
 // Security headers
-app.use(securityHeaders({
-    contentSecurityPolicy: "default-src 'self'",
-    xFrameOptions: "DENY",
-}));
+app.use(
+    securityHeaders({
+        contentSecurityPolicy: "default-src 'self'",
+        xFrameOptions: "DENY",
+    }),
+);
 
 // Request validation
-app.post("/users", validate({
-    body: { name: "string", email: "email" }
-}), handler);
+app.post(
+    "/users",
+    validate({
+        body: { name: "string", email: "email" },
+    }),
+    handler,
+);
 ```
 
 ### Error Handling
@@ -210,6 +223,8 @@ await deleteR2(env.MY_BUCKET, "file.txt");
 
 ### D1 (Database)
 
+#### Basic Usage
+
 ```typescript
 import { prepareD1, D1Service } from "cloudflare-edge-toolkit";
 
@@ -220,6 +235,69 @@ const result = await stmt.bind(id).first();
 // Class API
 const db = new D1Service(env.DB);
 const result = await db.prepare("SELECT * FROM users").all();
+```
+
+#### Query Builder (v1.2.0+)
+
+```typescript
+import { QueryBuilder } from "cloudflare-edge-toolkit";
+
+const users = await new QueryBuilder(env.DB)
+    .select("id", "name", "email")
+    .from("users")
+    .where("age", ">", 18)
+    .orderBy("name", "ASC")
+    .limit(10)
+    .all();
+```
+
+#### ORM Models (v1.2.0+)
+
+```typescript
+import { Model } from "cloudflare-edge-toolkit";
+
+class User extends Model {
+    static tableName = "users";
+    id?: number;
+    name?: string;
+    email?: string;
+}
+
+// Set database
+User.setDatabase(env.DB);
+
+// Use model
+const users = await User.all();
+const user = await User.find(1);
+const newUser = await User.create({ name: "John", email: "john@example.com" });
+await User.update({ name: "Jane" }, { id: 1 });
+await User.delete({ id: 1 });
+```
+
+#### Migrations (v1.2.0+)
+
+```typescript
+import { MigrationRunner, createMigration } from "cloudflare-edge-toolkit";
+
+const runner = new MigrationRunner(env.DB);
+const migrations = [
+    createMigration(
+        "001_create_users",
+        async (db) => {
+            await db.exec(`
+                CREATE TABLE users (
+                    id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL
+                )
+            `);
+        },
+        async (db) => {
+            await db.exec("DROP TABLE users");
+        },
+    ),
+];
+
+await runner.up(migrations);
 ```
 
 ### Cache API
@@ -301,11 +379,13 @@ app.get("/admin", requireRole("admin"), handler);
 ```typescript
 import { securityHeaders } from "cloudflare-edge-toolkit";
 
-app.use(securityHeaders({
-    contentSecurityPolicy: "default-src 'self'",
-    xFrameOptions: "DENY",
-    strictTransportSecurity: "max-age=31536000",
-}));
+app.use(
+    securityHeaders({
+        contentSecurityPolicy: "default-src 'self'",
+        xFrameOptions: "DENY",
+        strictTransportSecurity: "max-age=31536000",
+    }),
+);
 ```
 
 ### Request Validation
@@ -313,13 +393,17 @@ app.use(securityHeaders({
 ```typescript
 import { validate } from "cloudflare-edge-toolkit";
 
-app.post("/register", validate({
-    body: {
-        name: { type: "string", required: true, min: 3 },
-        email: { type: "email", required: true },
-        age: { type: "number", min: 18, max: 100 },
-    },
-}), handler);
+app.post(
+    "/register",
+    validate({
+        body: {
+            name: { type: "string", required: true, min: 3 },
+            email: { type: "email", required: true },
+            age: { type: "number", min: 18, max: 100 },
+        },
+    }),
+    handler,
+);
 ```
 
 ## Utilities

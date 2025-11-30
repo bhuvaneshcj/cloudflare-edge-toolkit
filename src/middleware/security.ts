@@ -19,9 +19,7 @@ export interface SecurityHeadersOptions {
 /**
  * Create security headers middleware
  */
-export function securityHeaders(
-    options: SecurityHeadersOptions = {},
-): Handler {
+export function securityHeaders(options: SecurityHeadersOptions = {}): Handler {
     const {
         contentSecurityPolicy,
         xFrameOptions = "DENY",
@@ -80,7 +78,9 @@ export function addSecurityHeaders(
     if (xXSSProtection) {
         headers.set(
             "X-XSS-Protection",
-            typeof xXSSProtection === "string" ? xXSSProtection : "1; mode=block",
+            typeof xXSSProtection === "string"
+                ? xXSSProtection
+                : "1; mode=block",
         );
     }
 
@@ -114,4 +114,3 @@ export function addSecurityHeaders(
         headers,
     });
 }
-

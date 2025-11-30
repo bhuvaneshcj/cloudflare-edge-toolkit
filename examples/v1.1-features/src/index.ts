@@ -8,7 +8,11 @@ import {
 } from "cloudflare-edge-toolkit";
 
 export default {
-    async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    async fetch(
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext,
+    ): Promise<Response> {
         const app = new Router();
 
         // Global middleware
@@ -35,7 +39,9 @@ export default {
             const id = req.params?.id;
             return json({ userId: id });
         });
-        userRouter.post("/", () => json({ message: "Create user" }, { status: 201 }));
+        userRouter.post("/", () =>
+            json({ message: "Create user" }, { status: 201 }),
+        );
 
         app.use("/users", userRouter);
 
@@ -47,16 +53,21 @@ export default {
         });
 
         // Example 4: Security headers middleware
-        app.get("/secure", securityHeaders({
-            contentSecurityPolicy: "default-src 'self'",
-            xFrameOptions: "DENY",
-            strictTransportSecurity: "max-age=31536000",
-        }), () => {
-            return json({ message: "Secure endpoint" });
-        });
+        app.get(
+            "/secure",
+            securityHeaders({
+                contentSecurityPolicy: "default-src 'self'",
+                xFrameOptions: "DENY",
+                strictTransportSecurity: "max-age=31536000",
+            }),
+            () => {
+                return json({ message: "Secure endpoint" });
+            },
+        );
 
         // Example 5: Request validation middleware
-        app.post("/register",
+        app.post(
+            "/register",
             validate({
                 body: {
                     name: { type: "string", required: true, min: 3, max: 50 },
@@ -66,15 +77,21 @@ export default {
             }),
             async (req) => {
                 const body = await req.json();
-                return json({ message: "Registration successful", data: body }, { status: 201 });
-            }
+                return json(
+                    { message: "Registration successful", data: body },
+                    { status: 201 },
+                );
+            },
         );
 
         // Example 6: Combined features
-        const admin = app.group("/admin", securityHeaders({
-            xFrameOptions: "DENY",
-            contentSecurityPolicy: "default-src 'self'",
-        }));
+        const admin = app.group(
+            "/admin",
+            securityHeaders({
+                xFrameOptions: "DENY",
+                contentSecurityPolicy: "default-src 'self'",
+            }),
+        );
 
         admin.get("/dashboard", () => json({ message: "Admin dashboard" }));
         admin.get("/settings", () => json({ message: "Admin settings" }));
@@ -95,4 +112,3 @@ export default {
 interface Env {
     // Add your environment bindings here
 }
-

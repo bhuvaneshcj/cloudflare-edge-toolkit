@@ -52,4 +52,3 @@ export function addCompressionHeaders(
 
     return response;
 }
-
