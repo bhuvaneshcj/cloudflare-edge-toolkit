@@ -1,0 +1,17 @@
+name = "full-stack-app"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "USERS_KV"
+id = "your-kv-namespace-id"
+preview_id = "your-kv-namespace-preview-id"
+
+[[r2_buckets]]
+binding = "MY_BUCKET"
+bucket_name = "my-bucket"
+preview_bucket_name = "my-bucket-preview"
+
+[vars]
+JWT_SECRET = "your-secret-key-change-in-production"
+

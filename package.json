@@ -1,0 +1,63 @@
+{
+    "name": "cloudflare-edge-toolkit",
+    "version": "1.0.0",
+    "description": "A TypeScript-first developer toolkit for Cloudflare Workers with router, middleware, storage wrappers, and utilities",
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "cloudflare",
+        "workers",
+        "edge",
+        "router",
+        "middleware",
+        "kv",
+        "r2",
+        "d1",
+        "typescript",
+        "toolkit"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bhuvaneshcj/cloudflare-edge-toolkit.git"
+    },
+    "bugs": {
+        "url": "https://github.com/bhuvaneshcj/cloudflare-edge-toolkit/issues"
+    },
+    "homepage": "https://github.com/bhuvaneshcj/cloudflare-edge-toolkit#readme",
+    "peerDependencies": {
+        "@cloudflare/workers-types": "^4.20240208.0"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20240208.0",
+        "@types/node": "^20.11.0",
+        "typescript": "^5.3.3"
+    },
+    "optionalDependencies": {
+        "jose": "^5.2.0"
+    },
+    "engines": {
+        "node": ">=24.0.0"
+    }
+}

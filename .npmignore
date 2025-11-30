@@ -1,0 +1,16 @@
+src/
+examples/
+tests/
+scripts/
+.github/
+tsconfig.json
+*.ts
+!*.d.ts
+.gitignore
+.npmignore
+*.log
+.DS_Store
+.env
+.env.local
+*.tsbuildinfo
+
