@@ -278,6 +278,33 @@ await User.update({ name: "Jane" }, { id: 1 });
 await User.delete({ id: 1 });
 ```
 
+#### Relationships (v1.2.0+)
+
+```typescript
+import { Relations, withRelations } from "cloudflare-edge-toolkit";
+
+// Define relationships
+class User extends Model {
+    static tableName = "users";
+    posts = Relations.hasMany(Post, "user_id");
+}
+
+class Post extends Model {
+    static tableName = "posts";
+    author = Relations.belongsTo(User, "user_id");
+}
+
+// Use relationships
+const user = await User.find(1);
+const posts = await user.posts(user);
+
+// Eager load
+const users = await User.all();
+const usersWithPosts = await withRelations(users, {
+    posts: (u) => Relations.hasMany(Post, "user_id")(u),
+});
+```
+
 #### Migrations (v1.2.0+)
 
 ```typescript
